@@ -435,6 +435,9 @@ def save_converted_files(res, item_dicoms, bids, outtype, prefix, outname_bids, 
     """
     from nipype.interfaces.base import isdefined
 
+    prefix_dirname  = op.dirname(prefix + '.ext')
+    prefix_basename = op.basename(prefix)
+
     bids_outfiles = []
     res_files = res.outputs.converted_files
 
@@ -468,10 +471,60 @@ def save_converted_files(res, item_dicoms, bids, outtype, prefix, outname_bids, 
                       else [None] * len(res_files))
 
         for fl, suffix, bids_file in zip(res_files, suffixes, bids_files):
-            outname = "%s%s.%s" % (prefix, suffix, outtype)
+            # _sbref sequences reconstructing magnitude and phase generate
+            # two NIfTI files in the same series, so we cannot just add
+            # the suffix, if we want to be bids compliant:
+
+            # The following doesn't work, because the assignment 1->magnitude and
+            #    2->phase is not always true:
+            if ( bids and (False) ):
+                # Let's assume suffix=1 is for magnitude and =2 for phase:
+                if   (suffix == '1'): mag_or_phase = 'magnitude'
+                elif (suffix == '2'): mag_or_phase = 'phase'
+                
+                # insert "-magnitude" or "-phase" after "acq" (if not already present):
+                if ('-magnitude' in prefix):
+                    o1, o2 = prefix.split('-magnitude',1)
+                    outname = "%s-%s%s.%s" % (o1, mag_or_phase, o2, outtype)
+                elif ('-phase' in prefix):
+                    o1, o2 = prefix.split('-phase',1)
+                    outname = "%s-%s%s.%s" % (o1, mag_or_phase, o2, outtype)
+                elif ('_acq' in prefix):
+                    o1, o2 = prefix.split('_acq',1)
+                    o2, o3 = o2.split('_',1)
+                    outname = "%s_acq%s-%s-%s.%s" % (o1, o2, mag_or_phase, o3, outtype)
+                else:
+                    # just add "_acq-magnitude" or "_acq-phase" before "_sbref":
+                    outname = "%s_acq-%s_sbref.%s" % (prefix.strip('_sbref'), mag_or_phase, outtype)
+                
+            if ( bids and (prefix_basename[-6:] == '_sbref') ):
+                # if "_rec-" is specify, attach the suffix to the value.
+                if ('_rec-' in prefix_basename):
+                    spt = prefix_basename.split('_rec-',1)
+                    # discard anything after the next "-" or "_":
+                    spt_spt = spt[1].split('_',1)
+                    outname = "%s_rec-%s%s_%s.%s" % (spt[0], spt_spt[0], suffix, spt_spt[1], outtype)
+                else:
+                    # if not, insert "_rec-" + suffix into the outname **before** "_run",
+                    #   "_echo" or "_sbref", whichever appears first in the "prefix":
+                    for my_str in ['_run', '_echo', '_sbref']:
+                        if (my_str in prefix_basename):
+                            spt = prefix_basename.split(my_str, 1)
+                            outname = "%s_rec-%s%s%s.%s" % (spt[0], suffix, my_str, spt[1], outtype)
+                            break
+            elif ( bids and ('scout' in prefix_basename.lower()) ):
+                # in some cases (more than one slice slab), there are several
+                #   NIfTI images in the scout run, so distinguish them with "_acq-"
+                spt = prefix_basename.split('_acq-Scout', 1)
+                outname = "%s%s%s%s.%s" % (spt[0], '_acq-Scout', suffix, spt[1], outtype)
+            else:
+                outname = "%s%s.%s" % (prefix_basename, suffix, outtype)
+
+            # stitch back the directory name:
+            outname = prefix_dirname + "/" + outname
             safe_copyfile(fl, outname, overwrite)
             if bids_file:
-                outname_bids_file = "%s%s.json" % (prefix, suffix)
+                outname_bids_file = "%s.json" % (outname.strip(outtype))
                 safe_copyfile(bids_file, outname_bids_file, overwrite)
                 bids_outfiles.append(outname_bids_file)
     # res_files is not a list

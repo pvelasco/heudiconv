@@ -5,7 +5,13 @@ import logging
 from collections import OrderedDict
 import tarfile
 
-import dicom as dcm
+try:
+    # pydicom < 1.0
+    import dicom as dcm
+except:
+    # pydicom >= 1.0
+    import pydicom as dcm
+            
 import dcmstack as ds
 
 from .utils import SeqInfo, load_json, set_readonly
@@ -41,8 +47,8 @@ def group_dicoms_into_seqinfos(files, file_filter, dcmfilter, grouping):
     per_studyUID = grouping == 'studyUID'
     per_accession_number = grouping == 'accession_number'
     lgr.info("Analyzing %d dicoms", len(files))
-    import dcmstack as ds
-    import dicom as dcm
+    #import dcmstack as ds
+    #import dicom as dcm
 
     groups = [[], []]
     mwgroup = []
@@ -383,7 +389,8 @@ def embed_nifti(dcmfiles, niftifile, infofile, bids_info, force, min_meta):
         stack = ds.parse_and_stack(dcmfiles, force=force).values()
         if len(stack) > 1:
             raise ValueError('Found multiple series')
-        stack = stack[0]
+        #stack = stack[0]     # does not work in Python 3
+        stack = next(iter(stack))
 
         #Create the nifti image using the data array
         if not op.exists(niftifile):
