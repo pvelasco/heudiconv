@@ -394,6 +394,8 @@ def nipype_convert(item_dicoms, prefix, with_prov, bids, tmpdir):
     convertnode.base_dir = tmpdir
     convertnode.inputs.source_names = item_dicoms
     convertnode.inputs.out_filename = op.basename(op.dirname(prefix))
+    # nipype 1.0.0 causes dcm2niix run with -o PWD (not base_dir even)
+    convertnode.inputs.output_dir = tmpdir
     if nipype.__version__.split('.')[0] == '0':
         # deprecated since 1.0, might be needed(?) before
         convertnode.inputs.terminal_output = 'allatonce'
@@ -498,7 +500,7 @@ def save_converted_files(res, item_dicoms, bids, outtype, prefix, outname_bids, 
                     outname = "%s_acq-%s_sbref.%s" % (prefix.strip('_sbref'), mag_or_phase, outtype)
                 
             if ( bids and (prefix_basename[-6:] == '_sbref') ):
-                # if "_rec-" is specify, attach the suffix to the value.
+                # if "_rec-" is specified, attach the suffix to the value.
                 if ('_rec-' in prefix_basename):
                     spt = prefix_basename.split('_rec-',1)
                     # discard anything after the next "-" or "_":

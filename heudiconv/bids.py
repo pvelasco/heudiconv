@@ -10,14 +10,7 @@ import csv
 from random import sample
 from glob import glob
 
-try:
-    # pydicom < 1.0
-    import dicom as dcm
-except:
-    # pydicom >= 1.0
-    import pydicom as dcm
-
-import dcmstack as ds
+from heudiconv.external.pydicom import dcm
 
 from .parser import find_files
 from .utils import (
@@ -294,6 +287,7 @@ def get_formatted_scans_key_row(item):
 
     """
     dcm_fn = item[-1][0]
+    from heudiconv.external.dcmstack import ds
     mw = ds.wrapper_from_data(dcm.read_file(dcm_fn,
                                             stop_before_pixels=True,
                                             force=True))
