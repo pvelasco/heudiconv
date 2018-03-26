@@ -32,7 +32,7 @@ WORKDIR /app
 RUN apt-get update -qq && apt-get install -y git-core && \
     apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && \
     cd /tmp && \
-    git clone https://github.com/pvelasco/dcmstack.git && \
+    git clone https://github.com/cbinyu/dcmstack.git && \
     cd dcmstack && \
     git checkout rf/py3 && \
     easy_install ./ && \
