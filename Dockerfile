@@ -32,7 +32,7 @@ WORKDIR /app
 RUN apt-get update -qq && apt-get install -y git-core && \
     apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && \
     cd /tmp && \
-    git clone https://github.com/cbinyu/dcmstack.git && \
+    git clone https://github.com/pvelasco/dcmstack.git && \
     cd dcmstack && \
     git checkout rf/py3 && \
     easy_install ./ && \
@@ -53,7 +53,7 @@ RUN apt-get update && apt-get upgrade -y && \
 		
 # Install heudiconv from github:
 RUN cd /tmp && \
-    git clone https://github.com/pvelasco/heudiconv.git && \
+    git clone https://github.com/cbinyu/heudiconv.git && \
     cd heudiconv && \
     git checkout master && \
     pip install . && \
