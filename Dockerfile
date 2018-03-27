@@ -21,7 +21,7 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get autoclean -y && apt-get autoremove -y
 
 ## Install any needed Python packages specified in requirements.txt:
-ADD requirements.txt /app/
+#ADD requirements.txt /app/
 WORKDIR /app
 # They say using "requirements.txt" tells docker to skip pip install if
 # no changes have been made to requirements.txt.
