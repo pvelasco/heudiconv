@@ -295,7 +295,7 @@ def infotodict(seqinfo):
             #   have more than a couple of volumes.  I'll use 5, to be safe:
             if ( s.dim4 >= 5 ):
                 # this is a standard diffusion acquisition
-                acq = s.dim4+'vols'
+                acq = str(s.dim4)+'vols'
                 info[dwi].append({'item': s.series_id, 'acq': acq})
 
                 # check to see if the previous run is a SBREF:
