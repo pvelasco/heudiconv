@@ -290,13 +290,12 @@ def infotodict(seqinfo):
 
         # We could also check: (s.image_type[2] == 'DIFFUSION')
         if ('ep_b' in s.sequence_name):       # Siemens product diffusion sequence:
-            # The "sequence_name" follows the template: "ep_bBBBB#DDD" where -BBBB is some b-value (not the max)
-            #                                                                -DDD  is the number of directions
-            bVal, dirs = s.sequence_name.split('ep_b')[1].split('#')
 
-            if ( int(bVal) >= 10 ) or ( int(dirs) > 1 ):
+            # This is not very rigorous, but in general, diffusion runs will
+            #   have more than a couple of volumes.  I'll use 5, to be safe:
+            if ( s.dim4 >= 5 ):
                 # this is a standard diffusion acquisition
-                acq = dirs+'dirs'
+                acq = s.dim4+'vols'
                 info[dwi].append({'item': s.series_id, 'acq': acq})
 
                 # check to see if the previous run is a SBREF:
