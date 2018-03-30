@@ -20,14 +20,6 @@ RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y emacs && apt-get clean -y && \
     apt-get autoclean -y && apt-get autoremove -y
 
-## Install any needed Python packages specified in requirements.txt:
-#ADD requirements.txt /app/
-WORKDIR /app
-# They say using "requirements.txt" tells docker to skip pip install if
-# no changes have been made to requirements.txt.
-# At the end, we can remove the Python packages we don't need:
-#RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
 # Install dckstack from github (using git):
 RUN apt-get update -qq && apt-get install -y git-core && \
     apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && \
