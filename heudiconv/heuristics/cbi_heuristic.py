@@ -300,7 +300,7 @@ def infotodict(seqinfo):
 
                 # check to see if the previous run is a SBREF:
                 if ( (idx > 0) and
-                         (seqinfo[idx - 1].series_description[-4:] != '_SBRef') and
+                         (seqinfo[idx - 1].series_description[-4:] == '_SBRef') and
                          ('epse2d' in seqinfo[idx - 1].sequence_name) ):
                     info[dwi_sbref].append({'item': s.series_id, 'acq': acq})
                 
@@ -308,14 +308,14 @@ def infotodict(seqinfo):
                 # this is a fmap for diffusion.
 
                 # TO-DO: for now, just ignore the _sbref image (if present, it would
-                #        be the previous run (seqinfo[idx - 1].series_description[-4:] != '_SBRef')
+                #        be the previous run (seqinfo[idx - 1].series_description[-4:] == '_SBRef')
                 #        because BIDS doesn't allow them.
     
                 # see if we can get the orientation, for topup:
                 if ('_AP' in s.protocol_name):
                     info[fmap_dwi_AP].append({'item': s.series_id})
                     if ( (idx > 0) and
-                            (seqinfo[idx - 1].series_description[-4:] != '_SBRef') ):
+                            (seqinfo[idx - 1].series_description[-4:] == '_SBRef') ):
                         info[fmap_dwi_AP_sbref].append({'item': seqinfo[idx - 1].series_id})
                 elif ('_PA' in s.protocol_name):
                     info[fmap_dwi_PA].append({'item': s.series_id})
