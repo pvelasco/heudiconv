@@ -46,7 +46,7 @@ RUN apt-get update && apt-get upgrade -y && \
     cd /tmp && \
     git clone https://github.com/rordenlab/dcm2niix.git && \
     cd dcm2niix && \
-    git checkout tags/v1.0.20171215 && \
+    git checkout tags/v1.0.20180328 && \
     mkdir build && cd build && cmake -DBATCH_VERSION=ON .. && \
     make && make install && \
     cd / && rm -rf /tmp/dcm2niix
