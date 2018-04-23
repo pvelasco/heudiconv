@@ -96,9 +96,10 @@ def infotodict(seqinfo):
             info[t1_scout].append({'item': s.series_id})
         # 2) High resolution T1w:
         # single volume, protocol name including T1, T1w, MPRAGE, MP-RAGE, MPR,...
-        if (s.dim4 == 1) and (('t1' in s.protocol_name.lower()) or
-                              (('mp' in s.protocol_name.lower()) and ('rage' in s.protocol_name.lower())) or
-                              ('mpr' in s.protocol_name.lower()) ):
+        if ((s.dim4 == 1) and ( ('t1' in s.protocol_name.lower()) or
+                                (('mp' in s.protocol_name.lower()) and ('rage' in s.protocol_name.lower())) or
+                                ('mpr' in s.protocol_name.lower()) ) and
+                              ('fl' in s.sequence_name)):
             # check the PE ('_PA' or '_rev' means 'reversed'):
             if ('_AP' in s.protocol_name):
                 acq = 'highres_AP'
