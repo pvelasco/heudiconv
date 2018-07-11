@@ -239,8 +239,9 @@ def infotodict(seqinfo):
         #    to be used with topup:
         #pdb.set_trace()
         if ((s.dim4 <= 3) and ('epse2d' in s.sequence_name)
-                          and (  ('distortion' in s.protocol_name.lower())
-                              or ('field'      in s.protocol_name.lower()) )):
+                          and (  ('dist'  in s.protocol_name.lower())
+                              or ('map'   in s.protocol_name.lower())
+                              or ('field' in s.protocol_name.lower()) )):
 
             if (s.series_description[-4:] != '_SBRef'):    # sbref from MB diffusion have epse2d in
                                                            #  sequence_name, so don't include them
