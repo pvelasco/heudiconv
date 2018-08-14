@@ -26,8 +26,7 @@ RUN apt-get update -qq && apt-get install -y git-core && \
     cd /tmp && \
     git clone https://github.com/moloney/dcmstack.git && \
     cd dcmstack && \
-#    git checkout py3-compat && \
-    git checkout master && \
+    git checkout py3-compat && \
     easy_install ./ && \
     cd / && rm -rf /tmp/dcmstack
 
@@ -48,7 +47,6 @@ RUN apt-get update && apt-get upgrade -y && \
 RUN cd /tmp && \
     git clone https://github.com/cbinyu/heudiconv.git && \
     cd heudiconv && \
-    git checkout master && \
     pip install . && \
     cd / && rm -rf /tmp/heudiconv
 
