@@ -141,7 +141,7 @@ def infotodict(seqinfo):
         #  the same as the main (magnitude) image.  So we only focus on the magnitude
         #  series (to exclude phase images) and more than 3 volumes (to exclude _SBRef)
         #  and then we search if the phase and/or _SBRef are present.
-        if ((s.dim4 >= 4) and ('epfid2d' in s.sequence_name) and ('M' in s.image_type)):
+        if ((s.dim4 >= 4) and ('epfid2d' in s.sequence_name) and ('M' in s.image_type) and (s.series_description[-6:].lower() != '_sbref')):
 
             ###   functional -- check PE direction   ###
             # ('_PA' or '_rev' means 'reversed')
@@ -220,14 +220,14 @@ def infotodict(seqinfo):
             #  previous run protocol name ended in _SBREF, to assign the
             #  same task name and --if possible-- same run number.
             if (idx > 0) and ('_SBRef' in seqinfo[idx - 1].series_description):
-                if (idx+1 < len(seqinfo)) and ('P' in seqinfo[idx+1].image_type):
+                #if (idx+1 < len(seqinfo)) and ('P' in seqinfo[idx+1].image_type):
                     # we have a magnitude/phase pair for the func, so the
                     #   sbref series before it would also have mag/phase.
                     #   However, it seems like they both come in the same
                     #   series.  So, for now, run:
-                    info[functional_magni_sbref].append({'item': seqinfo[idx - 1].series_id, 'task': task, 'acq': acq})
+                 #   info[functional_magni_sbref].append({'item': seqinfo[idx - 1].series_id, 'task': task, 'acq': acq})
                     #info[functional_phase_sbref].append({'item': seqinfo[idx - 1].series_id, 'task': task, 'acq': acq})
-                else:
+                #else:
                     info[functional_sbref].append({'item': seqinfo[idx - 1].series_id, 'task': task, 'acq': acq})
 
 
