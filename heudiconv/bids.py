@@ -73,7 +73,6 @@ def populate_bids_templates(path, defaults={}):
     # way too many -- let's just collect all which are the same!
     # FIELDS_TO_TRACK = {'RepetitionTime', 'FlipAngle', 'EchoTime',
     #                    'Manufacturer', 'SliceTiming', ''}
-    print('--------    about to save _events.tsv files:   -----------')
     for fpath in find_files('.*_task-.*\_bold\.json', topdir=path,
                         exclude_vcs=True, exclude="/\.(datalad|heudiconv)/"):
         task = re.sub('.*_(task-[^_\.]*(_acq-[^_\.]*)?)_.*', r'\1', fpath)
@@ -90,8 +89,6 @@ def populate_bids_templates(path, defaults={}):
         suf = '_bold.json'
         assert fpath.endswith(suf)
         # specify the name of the '_events.tsv' file:
-        print(' ')
-        print(fpath)
         if ( '_echo-' in fpath ):
             # multi-echo sequence: bids (1.1.0) specifies just one '_events.tsv'
             #   file, common for all echoes.  The name will not include _echo-.
@@ -99,18 +96,14 @@ def populate_bids_templates(path, defaults={}):
             fpath_split = fpath.split('_echo-')         # split fpath using '_echo-'
             fpath_split_2 = fpath_split[1].split('_')   # split the second part of fpath_split using '_'
             echoNo = fpath_split_2[0]                   # get echo number
-            print(echoNo)
             if ( echoNo == '1' ):
                 # we modify fpath to exclude '_echo-' + echoNo:
                 fpath = fpath_split[0] + '_' + fpath_split_2[1]
-                print('echo 1')
             else:
                 # for echoNo greater than 1, don't create the events file, so go to
                 #   the next for loop iteration:
-                print('echo > 1')
                 continue
-
-        print('current fpath: ' + fpath)
+        
         events_file = fpath[:-len(suf)] + '_events.tsv'
         # do not touch any existing thing, it may be precious
         if not op.lexists(events_file):
